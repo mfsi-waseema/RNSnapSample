@@ -46,7 +46,6 @@ const HomeView = () => {
             lensId={lensId}
             groupId={groupId}
             onImageCaptured={handleImageCaptured} // Pass the image capture callback
-            onLensChange={handleLensChange} // Pass the lens change callback
           />
         )}
         {group && (

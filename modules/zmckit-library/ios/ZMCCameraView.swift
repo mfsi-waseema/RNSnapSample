@@ -16,12 +16,6 @@ class ZMCCameraView: UIView {
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
-		
-		ZMCKit.onLensChange { lenseId in
-			if let lenseId = lenseId {
-				self.sendEvent(withName: "onLensChange", body: ["lensId": lenseId])
-			}
-		}
 	}
 	
 	required init?(coder: NSCoder) {
@@ -37,7 +31,7 @@ class ZMCCameraView: UIView {
 	}
 	
 	@objc var singleLens: Bool = false {
-		didSet { updateCameraView() }
+		didSet { }
 	}
 	
 	@objc var groupId: String = "" {
@@ -45,7 +39,15 @@ class ZMCCameraView: UIView {
 	}
 	
 	@objc var showFrontCamera: Bool = false {
-		didSet { updateCameraView() }
+		didSet {
+			
+		}
+	}
+	
+	@objc var showPreview: Bool = true {
+		didSet {
+			
+		}
 	}
 	
 	// MARK: - Camera Initialization
@@ -65,6 +67,10 @@ class ZMCCameraView: UIView {
 				return
 			}
 			
+			// Prevent setup if already set up
+			if isCameraLayoutSetup {
+				return
+			}
 			
 			// Initialize ZMCKit once
 			ZMCKit.initialize { initialized in
@@ -77,7 +83,7 @@ class ZMCCameraView: UIView {
 			
 			ZMCKit.onLensChange { lensId in
 				if let lensId = lensId {
-					print("Current lens ID: \(lensId)")
+					self.sendEvent(withName: "onLensChange", body: ["lensId": lensId])
 				}
 			}
 			
@@ -88,10 +94,6 @@ class ZMCCameraView: UIView {
 	private var isCameraLayoutSetup: Bool = false
 	
 	private func setupCameraLayout() {
-		// Prevent setup if already set up
-		if isCameraLayoutSetup {
-			return
-		}
 		
 		// Cleanup previous layout if it exists
 		cameraLayout?.removeFromSuperview()
@@ -182,7 +184,7 @@ extension ZMCCameraView: ZMCameraDelegate {
 	}
 	
 	func shouldShowDefaultPreview() -> Bool {
-		return true
+		return self.showPreview
 	}
 	
 	func willShowPreview(image: UIImage?) {
@@ -194,8 +196,6 @@ extension ZMCCameraView {
 	
 	// Method to send the event to JavaScript (React Native)
 	private func sendEvent(withName name: String, body: [String: Any]) {
-		if let eventEmitter = RCTBridge.current()?.module(forName: "RCTDeviceEventEmitter") as? RCTEventEmitter {
-			eventEmitter.sendEvent(withName: name, body: body)
-		}
+		ZMCameraEventEmitter.shared?.sendEventToReact(eventName: name, body: body)
 	}
 }

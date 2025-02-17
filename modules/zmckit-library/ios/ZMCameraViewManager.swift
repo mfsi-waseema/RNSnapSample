@@ -10,11 +10,11 @@ import React
 @objc(ZMCameraViewManager)
 class ZMCameraViewManager: RCTViewManager {
 	
-  override func view() -> UIView! {
-    return ZMCCameraView()
-  }
-  
-  @objc override static func requiresMainQueueSetup() -> Bool {
-    return true
-  }
+	override func view() -> UIView! {
+		return ZMCCameraView()
+	}
+	
+	@objc override static func requiresMainQueueSetup() -> Bool {
+		return true
+	}
 }

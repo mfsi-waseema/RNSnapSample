@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, DeviceEventEmitter } from 'react-native';
+import { View, StyleSheet, NativeEventEmitter, NativeModules } from 'react-native';
 import { ZMCameraView } from './CameraViewManager'; // Import your ZMCameraView native component
 
 interface SingleProductViewProps {
@@ -9,7 +9,6 @@ interface SingleProductViewProps {
   showFrontCamera?: boolean;
   showPreview?: boolean;
   onImageCaptured?: (imageUri: string) => void;
-  onLensChange?: (lensId: string) => void;
 }
 
 const SingleProductView: React.FC<SingleProductViewProps> = ({
@@ -19,43 +18,38 @@ const SingleProductView: React.FC<SingleProductViewProps> = ({
   showFrontCamera = false,
   showPreview = true,
   onImageCaptured,
-  onLensChange,
 }) => {
 
+  // Access NativeModules
+  const { ZMCameraEventEmitter } = NativeModules;
+
   useEffect(() => {
+    // Initialize the NativeEventEmitter for the ZMCameraEventEmitter
+    const eventEmitter = new NativeEventEmitter(ZMCameraEventEmitter);
+
     // Listen for image captured event from native code
-    const imageCapturedListener = DeviceEventEmitter.addListener('onImageCaptured', (event: { imageUri: string }) => {
+    const imageCapturedListener = eventEmitter.addListener('onImageCaptured', (event: { imageUri: string }) => {
       if (onImageCaptured) {
         onImageCaptured(event.imageUri);
-      }
-    });
-
-    // Listen for lens change event from native code
-    const lensChangeListener = DeviceEventEmitter.addListener('onLensChange', (event: { lensId: string }) => {
-      if (onLensChange) {
-        onLensChange(event.lensId);
       }
     });
 
     // Cleanup listeners on component unmount
     return () => {
       imageCapturedListener.remove();
-      lensChangeListener.remove();
     };
-  }, [onImageCaptured, onLensChange]);
+  }, [onImageCaptured]);
 
   return (
     <View style={styles.container}>
       <ZMCameraView
         style={styles.cameraView}
         singleLens={true}
+        showFrontCamera={showFrontCamera}
         apiToken={apiToken}
         lensId={lensId}
         groupId={groupId}
-        showFrontCamera={showFrontCamera}
         showPreview={showPreview}
-        onImageCaptured={onImageCaptured}
-        onLensChange={onLensChange}
       />
     </View>
   );

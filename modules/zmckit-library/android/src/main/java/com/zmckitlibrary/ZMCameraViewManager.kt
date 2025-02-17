@@ -132,9 +132,9 @@ class ZMCameraViewManager(private val reactContext: ReactApplicationContext) : V
 
                 override fun onLensChange(lensId: String) {
                     // Emit lens change event to React Native
-                    val params = Arguments.createMap()
-                    params.putString("lensId", lensId)
-                    sendEvent("onLensChange", params)
+//                    val params = Arguments.createMap()
+//                    params.putString("lensId", lensId)
+//                    sendEvent("onLensChange", params)
                 }
 
                 override fun shouldShowDefaultPreview(): Boolean {

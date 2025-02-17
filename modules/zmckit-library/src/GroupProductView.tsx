@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, ViewStyle, DeviceEventEmitter } from 'react-native';
+import { View, StyleSheet, ViewStyle, NativeEventEmitter, NativeModules } from 'react-native';
 import { ZMCameraView } from './CameraViewManager'; // Import the native component
+
+// Access the native module for event handling
+const { ZMCameraEventEmitter } = NativeModules;
 
 // Define the types for the component props
 interface GroupProductViewProps {
@@ -22,15 +25,17 @@ const GroupProductView: React.FC<GroupProductViewProps> = ({
 }) => {
 
   useEffect(() => {
+    const eventEmitter = new NativeEventEmitter(ZMCameraEventEmitter);
+
     // Listen for image captured event from the native module
-    const imageCapturedListener = DeviceEventEmitter.addListener('onImageCaptured', (event: { imageUri: string }) => {
+    const imageCapturedListener = eventEmitter.addListener('onImageCaptured', (event: { imageUri: string }) => {
       if (onImageCaptured) {
         onImageCaptured(event.imageUri);
       }
     });
 
     // Listen for lens change event from the native module
-    const lensChangeListener = DeviceEventEmitter.addListener('onLensChange', (event: { lensId: string }) => {
+    const lensChangeListener = eventEmitter.addListener('onLensChange', (event: { lensId: string }) => {
       if (onLensChange) {
         onLensChange(event.lensId);
       }
@@ -48,13 +53,11 @@ const GroupProductView: React.FC<GroupProductViewProps> = ({
       <ZMCameraView
         style={styles.cameraView}
         singleLens={false} // Group mode: single lens disabled
+        showFrontCamera={showFrontCamera}
         apiToken={apiToken}
         groupId={groupId}
         lensId="" // Empty lensId since this is for group mode
-        showFrontCamera={showFrontCamera}
         showPreview={showPreview} // Pass the showPreview prop
-        onImageCaptured={onImageCaptured} // Pass the callback for image captured
-        onLensChange={onLensChange} // Pass the callback for lens change
       />
     </View>
   );
