@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "ZMCKitReactNative",
   "main": "src/index",
-  "author": " <> ()",
-  "license": "UNLICENSED",
+  "author": "Ziylanmedya <> ()",
+  "license": "MIT",
   "homepage": "#readme",
   "create-react-native-library": {
     "type": "legacy-view",
     "languages": "kotlin-swift",
     "version": "0.48.1"
-  }
+  },
+  "keywords": [
+    "react-native",
+    "react",
+    "library"
+  ]
 }
