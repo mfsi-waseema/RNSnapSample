@@ -1,0 +1,15 @@
+{
+  "originHash" : "c3064567021f062b177412fc41b2021b7f2ef1b482ab5068a7accdd96b4cfeed",
+  "pins" : [
+    {
+      "identity" : "zmckit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/idealinktr/ZMCKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4dbbf2938a76dbc2042a75b1c686041989b6d6f6"
+      }
+    }
+  ],
+  "version" : 3
+}
